@@ -6,10 +6,23 @@
 	},
 	"item": [
 		{
-			"name": "Login",
+			"name": "Session management",
 			"item": [
 				{
-					"name": "DCNM Login",
+					"name": "Session - DCNM Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "826e585f-767d-4903-bcc0-4c24cc0af739",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"dcnm_token\", jsonData['Dcnm-Token']);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "basic",
@@ -50,6 +63,89 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Session - DCNM Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "826e585f-767d-4903-bcc0-4c24cc0af739",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{dcnm_pwd}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{dcnm_user}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"value": "{{dcnm_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/logout",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Session - Get DCNM version",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/dcnm-version",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"dcnm-version"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"event": [
@@ -76,173 +172,203 @@
 			]
 		},
 		{
-			"name": "Network",
+			"name": "Fabric",
 			"item": [
 				{
-					"name": "Network - Create network",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "3c6ef080-95cd-4762-afd2-477f766a5b53",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
+					"name": "Fabric - Get list of Fabrics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"type": "text",
+								"value": "{{dcnm_token}}"
 							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
 						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "cfa3eb50-8faf-47bf-85e9-db3edb0f5b7d",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/control/fabrics",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"control",
+								"fabrics"
+							]
 						}
-					],
+					},
+					"response": []
+				},
+				{
+					"name": "Fabric - Get Fabric details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"type": "text",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/control/fabrics/{{fabric_name}}",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"control",
+								"fabrics",
+								"{{fabric_name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fabric - Get Fabric config preview",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"type": "text",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/control/fabrics/{{fabric_name}}/config-preview",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"control",
+								"fabrics",
+								"{{fabric_name}}",
+								"config-preview"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fabric - Get Fabric inventory",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Dcnm-Token",
+								"value": "{{dcnm_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/control/fabrics/{{fabric_name}}/inventory",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"control",
+								"fabrics",
+								"{{fabric_name}}",
+								"inventory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fabric - Fabric config deploy",
 					"request": {
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
+								"type": "text",
 								"value": "application/json"
 							},
 							{
 								"key": "Dcnm-Token",
+								"type": "text",
 								"value": "{{dcnm_token}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"fabric\": \"{{fabric_name}}\",\r\n  \"networkName\": \"{{net_name}}\",\r\n  \"networkId\": \"{{net_vni}}\",\r\n  \"networkTemplate\": \"Default_Network\",\r\n  \"networkExtensionTemplate\": \"Default_Network_Extension\",\r\n  \"networkTemplateConfig\": \"{\\\"suppressArp\\\":\\\"false\\\",\\\"vlanId\\\":\\\"{{net_vlan}}\\\",\\\"gatewayIpAddress\\\":\\\"{{net_subnet}}\\\",\\\"networkName\\\":\\\"{{net_name}}\\\",\\\"enableIR\\\":\\\"false\\\",\\\"mtu\\\":\\\"1500\\\",\\\"isLayer2Only\\\":\\\"false\\\",\\\"intfDescription\\\":\\\"\\\",\\\"segmentId\\\":\\\"{{net_vni}}\\\",\\\"mcastGroup\\\":\\\"{{net_mgroup}}\\\",\\\"gatewayIpV6Address\\\":\\\"\\\",\\\"dhcpServerAddr1\\\":\\\"\\\",\\\"nveId\\\":\\\"1\\\",\\\"vrfDhcp\\\":\\\"\\\",\\\"vrfName\\\":\\\"{{vrf_name}}\\\"}\",\r\n  \"vrf\": \"{{vrf_name}}\",\r\n  \"networkTemplateParams\": {}\r\n}"
+							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks",
+							"raw": "https://{{dcnm_srv}}/rest/control/fabrics/{{fabric_name}}/config-deploy",
 							"protocol": "https",
 							"host": [
 								"{{dcnm_srv}}"
 							],
 							"path": [
 								"rest",
-								"top-down",
+								"control",
 								"fabrics",
 								"{{fabric_name}}",
-								"networks"
+								"config-deploy"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Network - Update network",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "3c6ef080-95cd-4762-afd2-477f766a5b53",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "cfa3eb50-8faf-47bf-85e9-db3edb0f5b7d",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Dcnm-Token",
-								"value": "{{dcnm_token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"fabric\": \"{{fabric_name}}\",\r\n  \"networkName\": \"{{net_name}}\",\r\n  \"networkId\": \"{{net_vni}}\",\r\n  \"networkTemplate\": \"Default_Network\",\r\n  \"networkExtensionTemplate\": \"Default_Network_Extension\",\r\n  \"networkTemplateConfig\": \"{\\\"suppressArp\\\":\\\"false\\\",\\\"vlanId\\\":\\\"{{net_vlan}}\\\",\\\"gatewayIpAddress\\\":\\\"{{net_subnet}}\\\",\\\"networkName\\\":\\\"{{net_name}}\\\",\\\"enableIR\\\":\\\"false\\\",\\\"mtu\\\":\\\"1500\\\",\\\"isLayer2Only\\\":\\\"false\\\",\\\"intfDescription\\\":\\\"\\\",\\\"segmentId\\\":\\\"{{net_vni}}\\\",\\\"mcastGroup\\\":\\\"{{net_mgroup}}\\\",\\\"gatewayIpV6Address\\\":\\\"\\\",\\\"dhcpServerAddr1\\\":\\\"\\\",\\\"nveId\\\":\\\"1\\\",\\\"vrfDhcp\\\":\\\"\\\",\\\"vrfName\\\":\\\"{{vrf_name}}\\\"}\",\r\n  \"vrf\": \"{{vrf_name}}\",\r\n  \"networkTemplateParams\": {}\r\n}"
-						},
-						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/{{net_name}}",
-							"protocol": "https",
-							"host": [
-								"{{dcnm_srv}}"
-							],
-							"path": [
-								"rest",
-								"top-down",
-								"fabrics",
-								"{{fabric_name}}",
-								"networks",
-								"{{net_name}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Network - Create L2 network",
+					"name": "Fabric - Save Fabric config",
 					"request": {
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
+								"type": "text",
 								"value": "application/json"
 							},
 							{
 								"key": "Dcnm-Token",
-								"value": "{{dcnm_token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"fabric\": \"{{fabric_name}}\",\r\n  \"networkName\": \"{{net_name}}\",\r\n  \"networkId\": \"{{net_vni}}\",\r\n  \"networkTemplate\": \"Default_Network\",\r\n  \"networkExtensionTemplate\": \"Default_Network_Extension\",\r\n  \"networkTemplateConfig\": \"{\\\"suppressArp\\\":\\\"false\\\",\\\"vlanId\\\":\\\"{{net_vlan}}\\\",\\\"gatewayIpAddress\\\":\\\"\\\",\\\"networkName\\\":\\\"{{net_name}}\\\",\\\"enableIR\\\":\\\"false\\\",\\\"mtu\\\":\\\"\\\",\\\"isLayer2Only\\\":\\\"true\\\",\\\"intfDescription\\\":\\\"\\\",\\\"segmentId\\\":\\\"{{net_vni}}\\\",\\\"mcastGroup\\\":\\\"{{net_mgroup}}\\\",\\\"gatewayIpV6Address\\\":\\\"\\\",\\\"dhcpServerAddr1\\\":\\\"\\\",\\\"nveId\\\":\\\"1\\\",\\\"vrfDhcp\\\":\\\"\\\",\\\"vrfName\\\":\\\"NA\\\"}\",\r\n  \"vrf\": \"NA\",\r\n  \"networkTemplateParams\": {}\r\n}"
-						},
-						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/",
-							"protocol": "https",
-							"host": [
-								"{{dcnm_srv}}"
-							],
-							"path": [
-								"rest",
-								"top-down",
-								"fabrics",
-								"{{fabric_name}}",
-								"networks",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Network - Check list of existing networks",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Dcnm-Token",
+								"type": "text",
 								"value": "{{dcnm_token}}"
 							}
 						],
@@ -251,133 +377,17 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks",
+							"raw": "https://{{dcnm_srv}}/rest/control/fabrics/{{fabric_name}}/config-save",
 							"protocol": "https",
 							"host": [
 								"{{dcnm_srv}}"
 							],
 							"path": [
 								"rest",
-								"top-down",
+								"control",
 								"fabrics",
 								"{{fabric_name}}",
-								"networks"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Network - Check network status",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Dcnm-Token",
-								"value": "{{dcnm_token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/{{net_name}}/status",
-							"protocol": "https",
-							"host": [
-								"{{dcnm_srv}}"
-							],
-							"path": [
-								"rest",
-								"top-down",
-								"fabrics",
-								"{{fabric_name}}",
-								"networks",
-								"{{net_name}}",
-								"status"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Network - Check networks attachment",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Dcnm-Token",
-								"value": "{{dcnm_token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/{{net_name}}/attachments",
-							"protocol": "https",
-							"host": [
-								"{{dcnm_srv}}"
-							],
-							"path": [
-								"rest",
-								"top-down",
-								"fabrics",
-								"{{fabric_name}}",
-								"networks",
-								"{{net_name}}",
-								"attachments"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Network - Delete network",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Dcnm-Token",
-								"value": "{{dcnm_token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/{{net_name}}",
-							"protocol": "https",
-							"host": [
-								"{{dcnm_srv}}"
-							],
-							"path": [
-								"rest",
-								"top-down",
-								"fabrics",
-								"{{fabric_name}}",
-								"networks",
-								"{{net_name}}"
+								"config-save"
 							]
 						}
 					},
@@ -388,6 +398,44 @@
 		{
 			"name": "VRF",
 			"item": [
+				{
+					"name": "VRF - Get list of existing VRFs",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/vrfs",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"vrfs"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "VRF - Create VRF",
 					"request": {
@@ -425,45 +473,7 @@
 					"response": []
 				},
 				{
-					"name": "VRF - Check list of existing VRFs",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Dcnm-Token",
-								"value": "{{dcnm_token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/vrfs",
-							"protocol": "https",
-							"host": [
-								"{{dcnm_srv}}"
-							],
-							"path": [
-								"rest",
-								"top-down",
-								"fabrics",
-								"{{fabric_name}}",
-								"vrfs"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "VRF - Check specific VRF config",
+					"name": "VRF - Get VRF config",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -502,7 +512,81 @@
 					"response": []
 				},
 				{
-					"name": "VRF - Check VRF attachment",
+					"name": "VRF - Attach VRF",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"type": "text",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"vrfName\": \"{{vrf_name}}\",\n        \"lanAttachList\": [\n            {\n                \"fabric\": \"{{fabric_name}}\",\n                \"vrfName\": \"{{vrf_name}}\",\n                \"serialNumber\": \"{{serial_id}}\",\n                \"vlan\": 0,\n                \"deployment\": true\n            }\n        ]\n    }\n]"
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/vrfs/attachments",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"vrfs",
+								"attachments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VRF - Detach VRF",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"type": "text",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"vrfName\": \"{{vrf_name}}\",\n        \"lanAttachList\": [\n            {\n                \"fabric\": \"{{fabric_name}}\",\n                \"vrfName\": \"{{vrf_name}}\",\n                \"serialNumber\": \"{{serial_id}}\",\n                \"vlan\": 0,\n                \"deployment\": false\n            }\n        ]\n    }\n]"
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/vrfs/attachments",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"vrfs",
+								"attachments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VRF - Get VRF attachment",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -523,7 +607,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/vrfs/attachments?vrf-names={{vrf_name}}'",
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/vrfs/attachments?vrf-names={{vrf_name}}",
 							"protocol": "https",
 							"host": [
 								"{{dcnm_srv}}"
@@ -539,7 +623,94 @@
 							"query": [
 								{
 									"key": "vrf-names",
-									"value": "{{vrf_name}}'"
+									"value": "{{vrf_name}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VRF - Deploy VRF",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"type": "text",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vrfNames\": \"{{vrf_name}}\"\n}"
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/vrfs/deployments",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"vrfs",
+								"deployments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VRF - Get VRF deployment history",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/vrfs/switches/history?vrf-names={{vrf_name}}&serial-numbers={{serial_id}}",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"vrfs",
+								"switches",
+								"history"
+							],
+							"query": [
+								{
+									"key": "vrf-names",
+									"value": "{{vrf_name}}"
+								},
+								{
+									"key": "serial-numbers",
+									"value": "{{serial_id}}"
 								}
 							]
 						}
@@ -585,81 +756,22 @@
 			]
 		},
 		{
-			"name": "Ops",
+			"name": "Network",
 			"item": [
 				{
-					"name": "Ops - Get DCNM version",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/dcnm-version",
-							"protocol": "https",
-							"host": [
-								"{{dcnm_srv}}"
-							],
-							"path": [
-								"rest",
-								"dcnm-version"
-							]
-						}
+					"name": "Network - Get list of existing networks",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
 					},
-					"response": []
-				},
-				{
-					"name": "Ops - Get Fabric inventory",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Dcnm-Token",
-								"value": "{{dcnm_token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/control/fabrics/{{fabric_name}}/inventory",
-							"protocol": "https",
-							"host": [
-								"{{dcnm_srv}}"
-							],
-							"path": [
-								"rest",
-								"control",
-								"fabrics",
-								"{{fabric_name}}",
-								"inventory"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Ops - Get list of Fabric",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"type": "text",
 								"value": "application/json"
 							},
 							{
 								"key": "Dcnm-Token",
-								"type": "text",
 								"value": "{{dcnm_token}}"
 							}
 						],
@@ -668,107 +780,187 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/control/fabrics",
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks",
 							"protocol": "https",
 							"host": [
 								"{{dcnm_srv}}"
 							],
 							"path": [
 								"rest",
-								"control",
-								"fabrics"
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"networks"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Ops - Save Fabric config",
+					"name": "Network - Create L3 network",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "3c6ef080-95cd-4762-afd2-477f766a5b53",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "cfa3eb50-8faf-47bf-85e9-db3edb0f5b7d",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
-								"type": "text",
 								"value": "application/json"
 							},
 							{
 								"key": "Dcnm-Token",
-								"type": "text",
 								"value": "{{dcnm_token}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\r\n  \"fabric\": \"{{fabric_name}}\",\r\n  \"networkName\": \"{{net_name}}\",\r\n  \"networkId\": \"{{net_vni}}\",\r\n  \"networkTemplate\": \"Default_Network\",\r\n  \"networkExtensionTemplate\": \"Default_Network_Extension\",\r\n  \"networkTemplateConfig\": \"{\\\"suppressArp\\\":\\\"false\\\",\\\"vlanId\\\":\\\"{{net_vlan}}\\\",\\\"gatewayIpAddress\\\":\\\"{{net_subnet}}\\\",\\\"networkName\\\":\\\"{{net_name}}\\\",\\\"enableIR\\\":\\\"false\\\",\\\"mtu\\\":\\\"1500\\\",\\\"isLayer2Only\\\":\\\"false\\\",\\\"intfDescription\\\":\\\"\\\",\\\"segmentId\\\":\\\"{{net_vni}}\\\",\\\"mcastGroup\\\":\\\"{{net_mgroup}}\\\",\\\"gatewayIpV6Address\\\":\\\"\\\",\\\"dhcpServerAddr1\\\":\\\"\\\",\\\"nveId\\\":\\\"1\\\",\\\"vrfDhcp\\\":\\\"\\\",\\\"vrfName\\\":\\\"{{vrf_name}}\\\"}\",\r\n  \"vrf\": \"{{vrf_name}}\",\r\n  \"networkTemplateParams\": {}\r\n}"
 						},
 						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/control/fabrics/{{fabric_name}}/config-save",
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks",
 							"protocol": "https",
 							"host": [
 								"{{dcnm_srv}}"
 							],
 							"path": [
 								"rest",
-								"control",
+								"top-down",
 								"fabrics",
 								"{{fabric_name}}",
-								"config-save"
+								"networks"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Ops - Fabric config deploy",
+					"name": "Network - Create L2 only network",
 					"request": {
 						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
-								"type": "text",
 								"value": "application/json"
 							},
 							{
 								"key": "Dcnm-Token",
-								"type": "text",
 								"value": "{{dcnm_token}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\r\n  \"fabric\": \"{{fabric_name}}\",\r\n  \"networkName\": \"{{net_name}}\",\r\n  \"networkId\": \"{{net_vni}}\",\r\n  \"networkTemplate\": \"Default_Network\",\r\n  \"networkExtensionTemplate\": \"Default_Network_Extension\",\r\n  \"networkTemplateConfig\": \"{\\\"suppressArp\\\":\\\"false\\\",\\\"vlanId\\\":\\\"{{net_vlan}}\\\",\\\"gatewayIpAddress\\\":\\\"\\\",\\\"networkName\\\":\\\"{{net_name}}\\\",\\\"enableIR\\\":\\\"false\\\",\\\"mtu\\\":\\\"\\\",\\\"isLayer2Only\\\":\\\"true\\\",\\\"intfDescription\\\":\\\"\\\",\\\"segmentId\\\":\\\"{{net_vni}}\\\",\\\"mcastGroup\\\":\\\"{{net_mgroup}}\\\",\\\"gatewayIpV6Address\\\":\\\"\\\",\\\"dhcpServerAddr1\\\":\\\"\\\",\\\"nveId\\\":\\\"1\\\",\\\"vrfDhcp\\\":\\\"\\\",\\\"vrfName\\\":\\\"NA\\\"}\",\r\n  \"vrf\": \"NA\",\r\n  \"networkTemplateParams\": {}\r\n}"
 						},
 						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/control/fabrics/{{fabric_name}}/config-deploy",
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/",
 							"protocol": "https",
 							"host": [
 								"{{dcnm_srv}}"
 							],
 							"path": [
 								"rest",
-								"control",
+								"top-down",
 								"fabrics",
 								"{{fabric_name}}",
-								"config-deploy"
+								"networks",
+								""
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Ops - Get Fabric config preview",
+					"name": "Network - Update network",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "3c6ef080-95cd-4762-afd2-477f766a5b53",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "cfa3eb50-8faf-47bf-85e9-db3edb0f5b7d",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"fabric\": \"{{fabric_name}}\",\r\n  \"networkName\": \"{{net_name}}\",\r\n  \"networkId\": \"{{net_vni}}\",\r\n  \"networkTemplate\": \"Default_Network\",\r\n  \"networkExtensionTemplate\": \"Default_Network_Extension\",\r\n  \"networkTemplateConfig\": \"{\\\"suppressArp\\\":\\\"false\\\",\\\"vlanId\\\":\\\"{{net_vlan}}\\\",\\\"gatewayIpAddress\\\":\\\"{{net_subnet}}\\\",\\\"networkName\\\":\\\"{{net_name}}\\\",\\\"enableIR\\\":\\\"false\\\",\\\"mtu\\\":\\\"1500\\\",\\\"isLayer2Only\\\":\\\"false\\\",\\\"intfDescription\\\":\\\"\\\",\\\"segmentId\\\":\\\"{{net_vni}}\\\",\\\"mcastGroup\\\":\\\"225.1.2.3\\\",\\\"gatewayIpV6Address\\\":\\\"\\\",\\\"dhcpServerAddr1\\\":\\\"\\\",\\\"nveId\\\":\\\"1\\\",\\\"vrfDhcp\\\":\\\"\\\",\\\"vrfName\\\":\\\"{{vrf_name}}\\\"}\",\r\n  \"vrf\": \"{{vrf_name}}\",\r\n  \"networkTemplateParams\": {}\r\n}"
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/{{net_name}}",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"networks",
+								"{{net_name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Network - Get network status",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "Content-Type",
-								"type": "text",
 								"value": "application/json"
 							},
 							{
 								"key": "Dcnm-Token",
-								"type": "text",
 								"value": "{{dcnm_token}}"
 							}
 						],
@@ -777,7 +969,321 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{dcnm_srv}}/rest/control/fabrics/{{fabric_name}}/config-preview",
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/{{net_name}}/status",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"networks",
+								"{{net_name}}",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Network - Attach networks",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"networkName\": \"{{net_name}}\",\n        \"lanAttachList\": [\n            {\n                \"fabric\": \"{{fabric_name}}\",\n                \"networkName\": \"{{net_name}}\",\n                \"serialNumber\": \"{{serial_id}}\",\n                \"vlan\": \"{{net_vlan}}\",\n                \"dot1QVlan\": 1,\n                \"untagged\": false,\n                \"deployment\": true,\n                \"switchPorts\": \"{{port_id}}\",\n                \"detachSwitchPorts\": \"\"\n            }\n        ]\n    }\n]"
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/attachments",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"networks",
+								"attachments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Network - Detach networks",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"networkName\": \"{{net_name}}\",\n        \"lanAttachList\": [\n            {\n                \"fabric\": \"{{fabric_name}}\",\n                \"networkName\": \"{{net_name}}\",\n                \"serialNumber\": \"{{serial_id}}\",\n                \"vlan\": \"{{net_vlan}}\",\n                \"dot1QVlan\": 1,\n                \"untagged\": false,\n                \"deployment\": false,\n                \"switchPorts\": \"{{port_id}}\",\n                \"detachSwitchPorts\": \"\"\n            }\n        ]\n    }\n]"
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/attachments",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"networks",
+								"attachments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Network - Get network attachment",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/{{net_name}}/attachments",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"networks",
+								"{{net_name}}",
+								"attachments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Network - Deploy network",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/{{net_name}}/deploy",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"networks",
+								"{{net_name}}",
+								"deploy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Network - Get network deployment history",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/{{net_name}}/switches/{{serial_id}}/history",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"networks",
+								"{{net_name}}",
+								"switches",
+								"{{serial_id}}",
+								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Network - Get ports bound to network on switch",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/{{net_name}}/switches/{{serial_id}}/ports",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"networks",
+								"{{net_name}}",
+								"switches",
+								"{{serial_id}}",
+								"ports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Network - Delete network",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/top-down/fabrics/{{fabric_name}}/networks/{{net_name}}",
+							"protocol": "https",
+							"host": [
+								"{{dcnm_srv}}"
+							],
+							"path": [
+								"rest",
+								"top-down",
+								"fabrics",
+								"{{fabric_name}}",
+								"networks",
+								"{{net_name}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Links",
+			"item": [
+				{
+					"name": "Links - Get list of links for a Fabric",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Dcnm-Token",
+								"value": "{{dcnm_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{dcnm_srv}}/rest/control/links/fabrics/{{fabric_name}}",
 							"protocol": "https",
 							"host": [
 								"{{dcnm_srv}}"
@@ -785,9 +1291,9 @@
 							"path": [
 								"rest",
 								"control",
+								"links",
 								"fabrics",
-								"{{fabric_name}}",
-								"config-preview"
+								"{{fabric_name}}"
 							]
 						}
 					},
