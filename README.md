@@ -13,6 +13,7 @@ Make sure you import the DCNM environment file, update the Postman vars with you
 
 Before creating any other call to DCNM, you need to log in using the 'Session - DCNM Login' call. This will save the token issued by DCNM and use it for any other subsequent calls (see Postman 'Tests' tab).
 
+These API calls are only applicable to VXLAN Fabrics built with DCNM 'Easy_Fabric' Fabric Builder.
 
 For creating a VRF/L3VNI:
 -------------------------
