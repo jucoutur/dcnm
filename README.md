@@ -19,13 +19,14 @@ For creating a VRF/L3VNI:
   1. 'VRF - Create VRF'
   2. 'VRF - Attach VRF'
   3. 'VRF - Deploy VRF'
-    => when running 'Get list of existing VRFs', "vrfStatus" should go through "IN PROGRESS" then "DEPLOYED".
+  => when running 'Get list of existing VRFs', "vrfStatus" should go through "IN PROGRESS" then "DEPLOYED".
 
 For deleting a VRF/L3VNI:
 -------------------------
   1. 'VRF - Detach VRF'
   2. 'VRF - Deploy VRF'
-  3. 'VRF - Delete VRF' (note: you need to remove any L2VNI attached to the VRF before removing it. Otherwise you will get a '400 Bad Request' HTTP return code)
+  3. 'VRF - Delete VRF'
+  (note: you need to remove any L2VNI attached to the VRF before removing it. Otherwise you will get a '400 Bad Request' HTTP return code)
 
 
 For creating a L2VNI:
@@ -33,7 +34,7 @@ For creating a L2VNI:
   1. 'Network - Create Network'
   2. 'Network - Attach Network'
   3. 'Network - Deploy Network'
-    => when running 'Get list of existing Networks', "networkStatus" should go through "IN PROGRESS" then "DEPLOYED".
+  => when running 'Get list of existing Networks', "networkStatus" should go through "IN PROGRESS" then "DEPLOYED".
 
 For deleting a L2VNI:
 ---------------------
